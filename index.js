@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 const app= express();
 const mysql= require('mysql');
+const fileupload= require('express-fileupload');
 port=4000
 
  app.listen(port,()=>{
@@ -10,6 +11,7 @@ port=4000
  });
  app.use(cors());
  app.use(bodyParser.json());
+ app.use(fileupload());
  //Mysql connection configaration
 var mysqlcon=mysql.createConnection({
     host:'localhost',
@@ -67,8 +69,7 @@ app.post("/Insertitem",(req,res)=>{
     let myfile= req.files.image;
     dfile=Math.floor(Math.random() * 9999)+"_"+time+"_"+myfile.name;
     tfile="upload/"+dfile;
-   
-    myfile.mv(tfile, (err)=>{
+     myfile.mv(tfile, (err)=>{
         if(err){
             res.json(err);
         }
@@ -83,7 +84,7 @@ app.post("/Insertitem",(req,res)=>{
             });
             
         }
-    })
+    }) 
 })
 
 //update with id wise
@@ -212,7 +213,6 @@ app.post('/login', (req, res) => {
             }
             //res.send(rows[0]);    
         }
-            
         else{
             console.log(err);
         }
