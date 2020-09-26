@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const app= express();
 const mysql= require('mysql');
 const fileupload= require('express-fileupload');
+
 port=4000
 
  app.listen(port,()=>{
@@ -193,7 +194,19 @@ app.post('/login', (req, res) => {
     })
 });
 
+
+
 //Make a order 
 app.post('/order', (req, res) => {
+     mysqlcon.query("INSERT INTO `cart` ( `item_id`, `user_id`, `delivery_status`, `order_status`, `quantity`, `Total`) VALUES (?, ?, ?, ?, ?, ?)",
+    [req.body.itemid,req.body.userid,req.body.deliverystatus,req.body.orderstatus,req.body.quantity,req.body.totalcost],(err,rows)=>{
+        if (!err){
+            res.json(rows).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+     
     
 });
