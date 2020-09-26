@@ -3,6 +3,7 @@ const cors = require('cors');
 const bodyParser = require("body-parser");
 const app= express();
 const mysql= require('mysql');
+const fileupload= require('express-fileupload');
 port=4000
 
  app.listen(port,()=>{
@@ -10,6 +11,7 @@ port=4000
  });
  app.use(cors());
  app.use(bodyParser.json());
+ app.use(fileupload());
  //Mysql connection configaration
 var mysqlcon=mysql.createConnection({
     host:'localhost',
@@ -67,23 +69,22 @@ app.post("/Insertitem",(req,res)=>{
     let myfile= req.files.image;
     dfile=Math.floor(Math.random() * 9999)+"_"+time+"_"+myfile.name;
     tfile="upload/"+dfile;
-   
-    myfile.mv(tfile, (err)=>{
+     myfile.mv(tfile, (err)=>{
         if(err){
             res.json(err);
         }
         else{
-            mysqlcon.query("INSERT INTO `items` (`name`, `image`, `category`, `price`) VALUES (?,?,?,?)",[req.body.name,dfile,req.body.category,req.body.price],(errr)=>{
+            mysqlcon.query("INSERT INTO `items` (`name`, `image`, `category`, `price`) VALUES (?,?,?,?)",[req.body.name,dfile,req.body.category,req.body.price],(errr,rows)=>{
                 if(errr){
                     res.json(errr);
                 }
                 else{
-                    res.json("success");
+                    res.json(rows.insertId);
                 }
             });
             
         }
-    })
+    }) 
 })
 
 //update with id wise
@@ -159,33 +160,8 @@ app.post('/getacustomer', (req, res) => {
     })
 });
 
-//INSERT ITEMS
-app.post("/Insertitemalter",(req,res)=>{
-    //
-    mysqlcon.query("INSERT INTO `items` (`name`,  `category`, `price`) VALUES (?,?,?)",[req.body.name,req.body.category,req.body.price],(errr)=>{
-        if(errr){
-            res.json(errr);
-        }
-        else{
-            res.json("success");
-        }
-    });
-    
-})
 
-//update with id wise
-app.post('/update2', (req,res)=>{
-    console.log(req.body);
-            mysqlcon.query("update items set name = ?, category = ?, price= ? where id = ?",
-            [req.body.name,req.body.category,req.body.price,req.body.id], (err, rows, fields)=>{
-                if(err){
-                    res.json("Error");
-                }
-                else{
-                    res.send("Success");
-                }
-            });
-});
+
 
 app.post('/imgchk',(req,res)=>{
     if(req.files!=null){
@@ -194,8 +170,6 @@ app.post('/imgchk',(req,res)=>{
     } else {
         res.json({name:req.body.name,category:req.body.category,price:req.body.price})
     }
-   
-    
 
 })
 
@@ -212,7 +186,6 @@ app.post('/login', (req, res) => {
             }
             //res.send(rows[0]);    
         }
-            
         else{
             console.log(err);
         }
