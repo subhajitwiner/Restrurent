@@ -192,3 +192,8 @@ app.post('/login', (req, res) => {
             
     })
 });
+
+//Make a order 
+app.post('/order', (req, res) => {
+    
+});
