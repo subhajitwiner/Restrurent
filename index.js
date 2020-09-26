@@ -74,12 +74,12 @@ app.post("/Insertitem",(req,res)=>{
             res.json(err);
         }
         else{
-            mysqlcon.query("INSERT INTO `items` (`name`, `image`, `category`, `price`) VALUES (?,?,?,?)",[req.body.name,dfile,req.body.category,req.body.price],(errr)=>{
+            mysqlcon.query("INSERT INTO `items` (`name`, `image`, `category`, `price`) VALUES (?,?,?,?)",[req.body.name,dfile,req.body.category,req.body.price],(errr,rows)=>{
                 if(errr){
                     res.json(errr);
                 }
                 else{
-                    res.json("success");
+                    res.json(rows.insertId);
                 }
             });
             
@@ -160,33 +160,8 @@ app.post('/getacustomer', (req, res) => {
     })
 });
 
-//INSERT ITEMS
-app.post("/Insertitemalter",(req,res)=>{
-    //
-    mysqlcon.query("INSERT INTO `items` (`name`,  `category`, `price`) VALUES (?,?,?)",[req.body.name,req.body.category,req.body.price],(errr)=>{
-        if(errr){
-            res.json(errr);
-        }
-        else{
-            res.json("success");
-        }
-    });
-    
-})
 
-//update with id wise
-app.post('/update2', (req,res)=>{
-    console.log(req.body);
-            mysqlcon.query("update items set name = ?, category = ?, price= ? where id = ?",
-            [req.body.name,req.body.category,req.body.price,req.body.id], (err, rows, fields)=>{
-                if(err){
-                    res.json("Error");
-                }
-                else{
-                    res.send("Success");
-                }
-            });
-});
+
 
 app.post('/imgchk',(req,res)=>{
     if(req.files!=null){
@@ -195,8 +170,6 @@ app.post('/imgchk',(req,res)=>{
     } else {
         res.json({name:req.body.name,category:req.body.category,price:req.body.price})
     }
-   
-    
 
 })
 
