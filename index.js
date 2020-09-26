@@ -148,18 +148,7 @@ app.post('/delete', (req,res)=>{
         }
     });
 });
-//Get a user
-app.post('/getacustomer', (req, res) => {
-    mysqlcon.query('SELECT * FROM `user` WHERE id=? and pass =?', [req.body.id,req.body.pass], (err, rows, fields) => {
-        if (!err){
-            res.send(rows[0]);           
-        } 
-        else{
-            console.log(err);
-        }
-            
-    })
-});
+
 
 
 
@@ -207,6 +196,52 @@ app.post('/order', (req, res) => {
             res.send(err);
         }
     })
-     
+});
     
+//update user order
+app.post('/userorderupdate', (req, res) => {
+    mysqlcon.query("UPDATE `cart` SET `order_status` = ? WHERE `cart`.`id` = ?",[req.body.orderstatus,req.body.orderid],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+
+
+//get orderlist user wise
+app.post('/orderlistbyuser', (req, res) => {
+    mysqlcon.query("SELECT * FROM `cart` WHERE user_id=?",[req.body.user_id],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+//get orderlist 
+app.post('/orderlist', (req, res) => {
+    mysqlcon.query("SELECT * FROM `cart`",(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+
+//get order by order id
+app.post('/getorder', (req, res) => {
+    mysqlcon.query("SELECT * FROM `cart` where id=?",[req.body.id],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
 });
