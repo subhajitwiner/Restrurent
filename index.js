@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const app= express();
 const mysql= require('mysql');
 const fileupload= require('express-fileupload');
+
 port=4000
 
  app.listen(port,()=>{
@@ -147,18 +148,7 @@ app.post('/delete', (req,res)=>{
         }
     });
 });
-//Get a user
-app.post('/getacustomer', (req, res) => {
-    mysqlcon.query('SELECT * FROM `user` WHERE id=? and pass =?', [req.body.id,req.body.pass], (err, rows, fields) => {
-        if (!err){
-            res.send(rows[0]);           
-        } 
-        else{
-            console.log(err);
-        }
-            
-    })
-});
+
 
 
 
@@ -190,5 +180,81 @@ app.post('/login', (req, res) => {
             console.log(err);
         }
             
+    })
+});
+
+
+
+//Make a order 
+app.post('/order', (req, res) => {
+     mysqlcon.query("INSERT INTO `cart` ( `item_id`, `user_id`, `date`,  `delivery_status`, `order_status`, `quantity`, `Total`) VALUES (?, ?, NOW(), ?, ?, ?, ?)",
+    [req.body.itemid,req.body.userid,req.body.deliverystatus,req.body.orderstatus,req.body.quantity,req.body.totalcost],(err,rows)=>{
+        if (!err){
+            res.json(rows).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+    
+//update user order
+app.post('/userorderupdate', (req, res) => {
+    mysqlcon.query("UPDATE `cart` SET `order_status` = ? WHERE `cart`.`id` = ?",[req.body.orderstatus,req.body.orderid],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+
+//update admin order
+app.post('/adminorderupdate', (req, res) => {
+    mysqlcon.query("UPDATE `cart` SET `delivery_status` = ? WHERE `cart`.`id` = ?",[req.body.deliverystatus,req.body.orderid],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+
+
+
+//get orderlist user wise
+app.post('/orderlistbyuser', (req, res) => {
+    mysqlcon.query("SELECT * FROM `cart` WHERE user_id=?",[req.body.user_id],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+//get orderlist 
+app.post('/orderlist', (req, res) => {
+    mysqlcon.query("SELECT * FROM `cart`",(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+
+//get order by order id
+app.post('/getorder', (req, res) => {
+    mysqlcon.query("SELECT * FROM `cart` where id=?",[req.body.id],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
     })
 });
