@@ -187,7 +187,7 @@ app.post('/login', (req, res) => {
 
 //Make a order 
 app.post('/order', (req, res) => {
-     mysqlcon.query("INSERT INTO `cart` ( `item_id`, `user_id`, `delivery_status`, `order_status`, `quantity`, `Total`) VALUES (?, ?, ?, ?, ?, ?)",
+     mysqlcon.query("INSERT INTO `cart` ( `item_id`, `user_id`, `date`,  `delivery_status`, `order_status`, `quantity`, `Total`) VALUES (?, ?, NOW(), ?, ?, ?, ?)",
     [req.body.itemid,req.body.userid,req.body.deliverystatus,req.body.orderstatus,req.body.quantity,req.body.totalcost],(err,rows)=>{
         if (!err){
             res.json(rows).status(200);
@@ -209,6 +209,18 @@ app.post('/userorderupdate', (req, res) => {
         }
     })
 });
+//update admin order
+app.post('/adminorderupdate', (req, res) => {
+    mysqlcon.query("UPDATE `cart` SET `delivery_status` = ? WHERE `cart`.`id` = ?",[req.body.deliverystatus,req.body.orderid],(err,row)=>{
+        if(!err){
+            res.send(row).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
+
 
 
 //get orderlist user wise
