@@ -209,6 +209,7 @@ app.post('/userorderupdate', (req, res) => {
         }
     })
 });
+
 //update admin order
 app.post('/adminorderupdate', (req, res) => {
     mysqlcon.query("UPDATE `cart` SET `delivery_status` = ? WHERE `cart`.`id` = ?",[req.body.deliverystatus,req.body.orderid],(err,row)=>{
