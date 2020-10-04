@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const app= express();
 const mysql= require('mysql');
 const fileupload= require('express-fileupload');
-
+const path = require('path');
 port=4000
 
  app.listen(port,()=>{
@@ -13,6 +13,7 @@ port=4000
  app.use(cors());
  app.use(bodyParser.json());
  app.use(fileupload());
+ app.use(express.static(path.join(__dirname,'upload')))
  //Mysql connection configaration
 var mysqlcon=mysql.createConnection({
     host:'localhost',
