@@ -258,3 +258,16 @@ app.post('/getorder', (req, res) => {
         }
     })
 });
+
+//create a user account 
+app.post('/createuser', (req, res) => {
+    mysqlcon.query("INSERT INTO `user` (`fname`, `lname`, `email`, `phno`, `role`, `pass`) VALUES (?, ?, ?, ?, ?, ?)", 
+    [req.body.fname,req.body.lname,req.body.email,req.body.phone,"user",req.body.pass],(err,rows)=>{
+        if (!err){
+            res.json(rows).status(200);
+        }
+        else{
+            res.send(err);
+        }
+    })
+});
