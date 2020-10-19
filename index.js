@@ -5,7 +5,7 @@ const app= express();
 const mysql= require('mysql');
 const fileupload= require('express-fileupload');
 const path = require('path');
-port=4000
+port=process.env.PORT || 5000
 
  app.listen(port,()=>{
     console.log(`server is running on ${port}`);
